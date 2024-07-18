@@ -1,15 +1,15 @@
-const path = require('path')
-const logDirPath = path.join(__dirname, '/../logs/')
-const logPath = path.join(logDirPath, 'app.log')
-const { statSync, mkdirSync, writeFileSync } = require('fs')
-const bunyan = require('bunyan')
-const { merge } = require('lodash')
+const path = require('path');
+const logDirPath = path.join(__dirname, '/../logs/');
+const logPath = path.join(logDirPath, 'app.log');
+const { statSync, mkdirSync, writeFileSync } = require('fs');
+const bunyan = require('bunyan');
+const { merge } = require('lodash');
 
 try {
-  statSync(logPath)
+  statSync(logPath);
 } catch (err) {
-  mkdirSync(logDirPath)
-  writeFileSync(logPath, '')
+  mkdirSync(logDirPath);
+  writeFileSync(logPath, '');
 }
 
 global.log = bunyan.createLogger({
@@ -17,21 +17,41 @@ global.log = bunyan.createLogger({
   level: 'info',
   serializers: bunyan.stdSerializers,
   streams: [{ path: logPath }, { stream: process.stdout, color: 'blue' }]
-})
+});
 
 var config = {
   default: {
     database: '',
     appUrl: 'http://localhost:3002',
     ports: {
-      app: 3000
+      app: 3002
     },
+  },
+  development: {
+    database: 'mongodb://localhost:27017/lendlord-users'
+  },
+  production: {
+    database: 'mongodb://production-db-url:27017/lendlord-users',
+    ports: {
+      app: 3000
+    }
   }
-}
+};
+
+
+// var config = {
+//   default: {
+//     database: 'mongodb://localhost:27017/lendlord-users',
+//     appUrl: 'http://localhost:3002',
+//     ports: {
+//       app: 3000
+//     },
+//   }
+// }
 
 exports.get = function get(env) {
-  const obj = {}
-  merge(obj, config.default)
-  merge(obj, config[env] || {})
-  return obj
+  const obj = {};
+  merge(obj, config.default);
+  merge(obj, config[env] || {});
+  return obj;
 }
