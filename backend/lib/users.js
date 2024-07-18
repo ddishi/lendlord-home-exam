@@ -22,13 +22,18 @@ class Users {
     }
 
     async updateUser(id, userData) {
-        const newUser = await this.repo.update(user);
+        const newUser = await this.repo.update(id, userData);
         return newUser;
     }
 
     async deleteUser(id) {
-        const user = await this.repo.delete(user);
+        const user = await this.repo.delete(id);
         return user;
+    }
+
+    async findEmployeesByManager(managerName) {
+        const employees = await this.repo.findEmployeesByManager(managerName);
+        return employees;
     }
 }
 

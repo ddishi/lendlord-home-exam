@@ -37,7 +37,17 @@ exports.getAllUsers = async ctx => {
  */
 exports.createUser = async ctx => {
     try {
-        const newUser = await users.createUser(ctx.request.body);
+        const userData = ctx.request.body;
+
+        // Remove empty strings or null values
+        for (const key in userData) {
+            if (userData[key] === '' || userData[key] === null) {
+                delete userData[key];
+            }
+        }
+
+        // const newUser = await users.createUser(ctx.request.body);
+        const newUser = await users.createUser(userData);
         ctx.status = 201;
         ctx.body = newUser;
     } catch (err) {
@@ -50,7 +60,9 @@ exports.createUser = async ctx => {
  * Updates user by id
  */
 exports.updateUserById = async ctx => {
-    const {id} = ctx.params;
+    console.log("hi")
+
+    const { id } = ctx.params;
     try {
         const updatedUser = await users.updateUser(id, ctx.request.body);
         if (!updatedUser) {
@@ -70,7 +82,7 @@ exports.updateUserById = async ctx => {
  * Deletes user by id
  */
 exports.deleteUserById = async ctx => {
-    const {id} = ctx.params;
+    const { id } = ctx.params;
     try {
         const deletedUser = await users.deleteUser(id);
         if (!deletedUser) {
@@ -79,6 +91,27 @@ exports.deleteUserById = async ctx => {
             return;
         }
         ctx.status = 204;
+    } catch (err) {
+        ctx.status = err.status || 500;
+        ctx.message = err.message || 'Internal server error';
+    }
+};
+
+/**
+ * Get manager and their employees
+ */
+exports.getManagerAndEmployees = async ctx => {
+    const { managerName } = ctx.params;
+    try {
+        const manager = await users.findUser({ firstName: managerName });
+        if (!manager) {
+            ctx.status = 404;
+            ctx.body = { message: 'Manager not found' };
+            return;
+        }
+        const employees = await users.findEmployeesByManager(managerName);
+        ctx.status = 200;
+        ctx.body = { manager, employees };
     } catch (err) {
         ctx.status = err.status || 500;
         ctx.message = err.message || 'Internal server error';

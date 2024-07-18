@@ -10,10 +10,10 @@ const schema = new mongoose.Schema(
         firstName: {type: String, required: true, trim: true},
         lastName: {type: String, required: true, trim: true},
         email: {type: String, required: true, trim: true},
-        dateStarted: {type: Date, required: true, default: Date.now()},
-        salary: {type: Number, required: true},
-        role: {type: String},
-        manager: {type: String,},
+        dateStarted: {type: Date, default: Date.now()},
+        salary: {type: Number, default: 0},
+        role: {type: String, default: ""},
+        manager: {type: String, default: ""},
     },
     {strict: false, autoCreate: true, timestamps: true}
 );

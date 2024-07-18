@@ -25,6 +25,11 @@ class Users {
         const user = await usersModel.findByIdAndDelete(id);
         return user;
     }
+
+    async findEmployeesByManager(managerName) {
+        const employees =  await usersModel.find({ manager: managerName });
+        return employees;
+    }
 }
 
 module.exports = Users;

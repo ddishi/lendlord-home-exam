@@ -8,6 +8,7 @@ router.get('/users', ctrl.getAllUsers);
 router.post('/users', ctrl.createUser);
 router.put('/users/:id', ctrl.updateUserById);
 router.delete('/users/:id', ctrl.deleteUserById);
+router.get('/users/manager/:managerName', ctrl.getManagerAndEmployees);
 
 
 
